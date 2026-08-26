@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Note Prime — El Yazısı Not Defteri</title>
+<meta name="description" content="Note Prime: Apple Pencil ile doğal el yazısı, sesli notlar, video ve daha fazlasıyla dijital not defteri uygulaması.">
+<style>
+  :root {
+    --bg: #101922;
+    --bg-secondary: #1a2836;
+    --primary: #0d7cf2;
+    --primary-light: #4da3ff;
+    --text-primary: #ffffff;
+    --text-secondary: #90accb;
+    --text-tertiary: #4a5f7a;
+    --border: #314c68;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+  }
+  a { color: var(--primary-light); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(16, 25, 34, 0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  header .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    height: 64px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), #6b3ff2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  nav { display: flex; gap: 28px; }
+  nav a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; }
+  nav a:hover { color: var(--text-primary); }
+
+  .hero {
+    padding: 96px 0 72px;
+    text-align: center;
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    max-width: 720px;
+    margin: 0 auto 20px;
+  }
+  .hero h1 span { color: var(--primary-light); }
+  .hero p {
+    color: var(--text-secondary);
+    font-size: 18px;
+    max-width: 560px;
+    margin: 0 auto 36px;
+  }
+  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 13px 26px; border-radius: 12px;
+    font-weight: 600; font-size: 15px; text-decoration: none;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); }
+
+  .hero-badge {
+    display: inline-block;
+    margin-bottom: 20px;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .mock {
+    margin: 64px auto 0;
+    max-width: 320px;
+    aspect-ratio: 9 / 18;
+    border-radius: 36px;
+    background: linear-gradient(160deg, var(--bg-secondary), var(--bg));
+    border: 1px solid var(--border);
+    box-shadow: 0 30px 80px rgba(13, 124, 242, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-tertiary);
+    font-size: 14px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  section { padding: 72px 0; }
+  .section-head { text-align: center; max-width: 560px; margin: 0 auto 48px; }
+  .section-head h2 { font-size: 32px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 12px; }
+  .section-head p { color: var(--text-secondary); font-size: 16px; }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .feature-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px;
+  }
+  .feature-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(13, 124, 242, 0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 16px;
+  }
+  .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+  .feature-card p { color: var(--text-secondary); font-size: 14px; }
+
+  .cta-band {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(13,124,242,0.12), rgba(107,63,242,0.08));
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 56px 24px;
+  }
+  .cta-band h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+  .cta-band p { color: var(--text-secondary); margin-bottom: 28px; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+  }
+  footer .wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  footer p { color: var(--text-tertiary); font-size: 13px; }
+  .footer-links { display: flex; gap: 20px; }
+  .footer-links a { color: var(--text-secondary); font-size: 13px; text-decoration: none; }
+  .footer-links a:hover { color: var(--text-primary); }
+
+  @media (max-width: 640px) {
+    nav { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brand">
+      <div class="brand-mark">📓</div>
+      Note Prime
+    </div>
+    <nav>
+      <a href="#ozellikler">Özellikler</a>
+      <a href="#indir">İndir</a>
+      <a href="privacy.html">Gizlilik</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="hero-badge">iOS için yeni</span>
+    <h1>El yazınla düşün,<br><span>dijitalde</span> sakla.</h1>
+    <p>Apple Pencil ile doğal bir yazım hissi, sesli notlar, video ve fotoğraflarla zenginleştirilmiş defterler — hepsi tek bir uygulamada.</p>
+    <div class="cta-row">
+      <a class="btn btn-primary" href="#indir">App Store'da Aç</a>
+      <a class="btn btn-secondary" href="#ozellikler">Özellikleri Gör</a>
+    </div>
+    <div class="mock">Uygulama ekran görüntüsü<br>buraya eklenecek</div>
+  </div>
+</section>
+
+<section id="ozellikler">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Notların için ihtiyacın olan her şey</h2>
+      <p>Basit bir çizim defterinden fazlası — sesli, görsel ve yazılı notları tek yerde topla.</p>
+    </div>
+    <div class="features">
+      <div class="feature-card">
+        <div class="feature-icon">✏️</div>
+        <h3>Doğal El Yazısı</h3>
+        <p>Apple Pencil desteğiyle akıcı, düşük gecikmeli çizim ve yazım deneyimi.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎙️</div>
+        <h3>Sesli Notlar</h3>
+        <p>Fikirlerini yazarken aynı anda sesli olarak da kaydet, sayfana göm.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎬</div>
+        <h3>Video Ekle</h3>
+        <p>Sayfalarına video ekleyerek notlarını daha zengin hale getir.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗂️</div>
+        <h3>Defter &amp; Klasör</h3>
+        <p>Notlarını defterlere, defterlerini klasörlere ayırarak düzenli tut.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3>Akıllı Arama</h3>
+        <p>El yazısı metne çevrilip aranabilir hale gelir, hiçbir not kaybolmaz.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h3>Cihazında Kalır</h3>
+        <p>Notların cihazında yerel olarak saklanır; istediğinde yedeğini alabilirsin.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="indir">
+  <div class="wrap">
+    <div class="cta-band">
+      <h2>Notlarını bugün dijitalleştirmeye başla</h2>
+      <p>Note Prime App Store'da ücretsiz olarak indirilebilir.</p>
+      <a class="btn btn-primary" href="#">App Store'dan İndir</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>&copy; 2026 Note Prime. Tüm hakları saklıdır.</p>
+    <div class="footer-links">
+      <a href="privacy.html">Gizlilik Politikası</a>
+      <a href="mailto:support@example.com">Destek</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
