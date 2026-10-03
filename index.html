@@ -1,253 +1,335 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Note Prime — El Yazısı Not Defteri</title>
-<meta name="description" content="Note Prime: Apple Pencil ile doğal el yazısı, sesli notlar, video ve daha fazlasıyla dijital not defteri uygulaması.">
+<meta name="description" content="Note Prime: Apple Pencil ile el yazısı notlar, çizimler, sesli notlar ve videolar tek bir defterde. iPhone ve iPad için.">
+<meta property="og:title" content="Note Prime — El Yazısı Not Defteri">
+<meta property="og:description" content="Apple Pencil ile el yazısı notlar, çizimler, sesli notlar ve videolar tek bir defterde.">
+<meta name="theme-color" content="#FFF8F5">
+<meta name="apple-itunes-app" content="app-id=6773075603">
 <style>
   :root {
-    --bg: #101922;
-    --bg-secondary: #1a2836;
-    --primary: #0d7cf2;
-    --primary-light: #4da3ff;
-    --text-primary: #ffffff;
-    --text-secondary: #90accb;
-    --text-tertiary: #4a5f7a;
-    --border: #314c68;
+    --bg: #FFF8F5; --bg2: #F5ECE7; --card: #FFFFFF;
+    --text: #2D2926; --muted: #59534D; --soft: #8C847B; --line: #E8E2D9;
+    --terracotta: #E07A5F; --deep: #9A442D; --terracotta-soft: #FFDBD2;
+    --sage: #81B29A; --sage-deep: #386753; --sage-soft: #D3EDDF;
+    --ochre: #F4A261; --ochre-deep: #8E4E14; --ochre-soft: #FFE4D0;
+    --periwinkle: #A29BFE; --shadow: 45, 41, 38;
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    line-height: 1.5;
-  }
-  a { color: var(--primary-light); }
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+         font: 17px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+         -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
 
-  header {
-    position: sticky; top: 0; z-index: 10;
-    background: rgba(16, 25, 34, 0.85);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
-  }
-  header .wrap {
-    display: flex; align-items: center; justify-content: space-between;
-    height: 64px;
-  }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
-  .brand-mark {
-    width: 32px; height: 32px; border-radius: 8px;
-    background: linear-gradient(135deg, var(--primary), #6b3ff2);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-  }
-  nav { display: flex; gap: 28px; }
-  nav a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; }
-  nav a:hover { color: var(--text-primary); }
+  /* Nav */
+  header.nav { position: sticky; top: 0; z-index: 10; background: rgba(255,248,245,.86);
+               backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+  header.nav .wrap { display: flex; align-items: center; gap: 16px; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; text-decoration: none; letter-spacing: -.01em; }
+  .brand-mark { width: 30px; height: 38px; border-radius: 6px; background: var(--terracotta); position: relative;
+                box-shadow: inset 4px 0 0 rgba(0,0,0,.14); }
+  .brand-mark::after { content: ""; position: absolute; right: 6px; bottom: -5px; width: 6px; height: 10px; background: var(--deep);
+                       clip-path: polygon(0 0,100% 0,100% 100%,50% 70%,0 100%); }
+  nav.links { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+  nav.links a { text-decoration: none; font-size: 15px; font-weight: 500; color: var(--muted); padding: 8px 12px; border-radius: 999px; }
+  nav.links a:hover { background: var(--bg2); color: var(--text); }
+  .lang { border: 0; background: var(--bg2); color: var(--text); font: 600 13px/1 inherit; padding: 9px 12px; border-radius: 999px; cursor: pointer; }
 
-  .hero {
-    padding: 96px 0 72px;
-    text-align: center;
-  }
-  .hero h1 {
-    font-size: clamp(32px, 5vw, 52px);
-    font-weight: 800;
-    letter-spacing: -0.02em;
-    max-width: 720px;
-    margin: 0 auto 20px;
-  }
-  .hero h1 span { color: var(--primary-light); }
-  .hero p {
-    color: var(--text-secondary);
-    font-size: 18px;
-    max-width: 560px;
-    margin: 0 auto 36px;
-  }
-  .cta-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 13px 26px; border-radius: 12px;
-    font-weight: 600; font-size: 15px; text-decoration: none;
-    transition: transform .15s ease, opacity .15s ease;
-  }
-  .btn:hover { transform: translateY(-1px); }
-  .btn-primary { background: var(--primary); color: #fff; }
-  .btn-secondary { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); }
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; font-size: 16px;
+         padding: 14px 24px; border-radius: 999px; transition: transform .12s ease; }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: var(--deep); color: #fff; box-shadow: 0 10px 24px -8px rgba(154,68,45,.45); }
+  .btn-secondary { background: var(--bg2); color: var(--text); }
+  .btn svg { width: 20px; height: 20px; }
 
-  .hero-badge {
-    display: inline-block;
-    margin-bottom: 20px;
-    padding: 6px 14px;
-    border-radius: 100px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    color: var(--text-secondary);
-    font-size: 13px;
-    font-weight: 600;
-  }
+  /* Hero */
+  .hero { padding: 64px 0 40px; }
+  .hero .wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
+  .eyebrow { display: inline-flex; align-items: center; gap: 6px; background: var(--sage-soft); color: var(--sage-deep);
+             font: 600 12px/1 inherit; letter-spacing: .08em; text-transform: uppercase; padding: 8px 14px; border-radius: 999px; }
+  h1 { font-size: clamp(38px, 6vw, 60px); line-height: 1.05; letter-spacing: -.035em; margin: 18px 0 18px; }
+  h1 em { font-style: normal; color: var(--deep); }
+  .lead { font-size: 19px; color: var(--muted); max-width: 520px; margin: 0 0 28px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .note { margin-top: 18px; font-size: 14px; color: var(--soft); }
 
-  .mock {
-    margin: 64px auto 0;
-    max-width: 320px;
-    aspect-ratio: 9 / 18;
-    border-radius: 36px;
-    background: linear-gradient(160deg, var(--bg-secondary), var(--bg));
-    border: 1px solid var(--border);
-    box-shadow: 0 30px 80px rgba(13, 124, 242, 0.15);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-tertiary);
-    font-size: 14px;
-    padding: 16px;
-    text-align: center;
-  }
+  /* Cover art (pure CSS) */
+  .covers { position: relative; height: 420px; }
+  .glow { position: absolute; inset: 15% 5%; border-radius: 50%;
+          background: linear-gradient(135deg, var(--terracotta-soft), var(--ochre-soft), var(--sage-soft)); filter: blur(48px); }
+  .cover { position: absolute; width: 190px; aspect-ratio: 3/4; border-radius: 18px;
+           box-shadow: -4px 10px 24px -6px rgba(var(--shadow),.18), 4px 14px 30px -10px rgba(var(--shadow),.18); }
+  .cover::before { content: ""; position: absolute; inset: 0; border-radius: inherit;
+                   background: linear-gradient(90deg, rgba(0,0,0,.20), rgba(0,0,0,0) 14px), var(--pattern, none); }
+  .cover::after { content: ""; position: absolute; right: 26px; bottom: -9px; width: 13px; height: 26px; background: var(--ribbon);
+                  clip-path: polygon(0 0,100% 0,100% 100%,50% 72%,0 100%); z-index: -1; }
+  .c1 { left: 2%; top: 70px; transform: rotate(-12deg); background: var(--sage); --ribbon: #4f7f68;
+        --pattern: radial-gradient(circle, rgba(255,255,255,.42) 3px, transparent 3.5px) 0 0/22px 22px; }
+  .c2 { right: 2%; top: 80px; transform: rotate(11deg); background: var(--ochre); --ribbon: #b06a2b;
+        --pattern: repeating-linear-gradient(45deg, rgba(255,255,255,.28) 0 6px, transparent 6px 18px); }
+  .c3 { left: 50%; top: 20px; width: 220px; transform: translateX(-50%); background: var(--terracotta); --ribbon: var(--deep);
+        --pattern: radial-gradient(circle at 25% 25%, rgba(255,255,255,.35) 4px, transparent 4.5px) 0 0/28px 28px; }
+  .label { position: absolute; left: 50%; top: 28%; transform: translateX(-50%); width: 72%; text-align: center;
+           background: #FDFBF7; border-radius: 8px; padding: 12px 8px; font-weight: 600; font-size: 17px; z-index: 1;
+           box-shadow: 0 2px 4px rgba(var(--shadow),.15), inset 0 0 0 3px #FDFBF7, inset 0 0 0 4px rgba(224,122,95,.55); }
 
+  /* Sections */
   section { padding: 72px 0; }
-  .section-head { text-align: center; max-width: 560px; margin: 0 auto 48px; }
-  .section-head h2 { font-size: 32px; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 12px; }
-  .section-head p { color: var(--text-secondary); font-size: 16px; }
+  .section-head { text-align: center; max-width: 640px; margin: 0 auto 40px; }
+  h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1.15; letter-spacing: -.025em; margin: 0 0 12px; }
+  .section-head p { color: var(--muted); margin: 0; font-size: 18px; }
 
-  .features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
-  }
-  .feature-card {
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 26px;
-  }
-  .feature-icon {
-    width: 44px; height: 44px; border-radius: 12px;
-    background: rgba(13, 124, 242, 0.15);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; margin-bottom: 16px;
-  }
-  .feature-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
-  .feature-card p { color: var(--text-secondary); font-size: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .feature { background: var(--card); border-radius: 24px; padding: 24px; box-shadow: 0 2px 10px -3px rgba(var(--shadow),.08); }
+  .icon { width: 48px; height: 48px; border-radius: 14px; display: grid; place-items: center; margin-bottom: 14px; }
+  .icon svg { width: 24px; height: 24px; }
+  .t { background: var(--terracotta-soft); color: var(--deep); }
+  .s { background: var(--sage-soft); color: var(--sage-deep); }
+  .o { background: var(--ochre-soft); color: var(--ochre-deep); }
+  .feature h3 { font-size: 18px; margin: 0 0 6px; letter-spacing: -.01em; }
+  .feature p { margin: 0; color: var(--muted); font-size: 15.5px; }
 
-  .cta-band {
-    text-align: center;
-    background: linear-gradient(135deg, rgba(13,124,242,0.12), rgba(107,63,242,0.08));
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    padding: 56px 24px;
-  }
-  .cta-band h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
-  .cta-band p { color: var(--text-secondary); margin-bottom: 28px; }
+  .premium { background: var(--bg2); border-radius: 32px; padding: 48px 32px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 32px; align-items: center; }
+  .pill { display: inline-block; background: var(--terracotta-soft); color: var(--deep); font: 600 12px/1 inherit; letter-spacing: .08em;
+          text-transform: uppercase; padding: 8px 14px; border-radius: 999px; margin-bottom: 14px; }
+  .premium ul { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 10px; }
+  .premium li { display: flex; gap: 10px; align-items: flex-start; color: var(--muted); }
+  .premium li::before { content: ""; flex: 0 0 20px; height: 20px; margin-top: 3px; border-radius: 50%; background: var(--sage)
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.5 10.5l3 3 6-6.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/20px no-repeat; }
+  .mini { display: flex; justify-content: center; gap: 14px; }
+  .mini span { width: 84px; aspect-ratio: 3/4; border-radius: 12px; box-shadow: 0 8px 18px -8px rgba(var(--shadow),.3); }
 
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 32px 0;
-  }
-  footer .wrap {
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 16px;
-  }
-  footer p { color: var(--text-tertiary); font-size: 13px; }
-  .footer-links { display: flex; gap: 20px; }
-  .footer-links a { color: var(--text-secondary); font-size: 13px; text-decoration: none; }
-  .footer-links a:hover { color: var(--text-primary); }
+  .final { text-align: center; }
+  .final .cta { justify-content: center; margin-top: 24px; }
 
-  @media (max-width: 640px) {
-    nav { display: none; }
+  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--soft); font-size: 14px; }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+  footer nav { margin-left: auto; display: flex; flex-wrap: wrap; gap: 18px; }
+  footer a { text-decoration: none; color: var(--muted); }
+  footer a:hover { color: var(--deep); }
+
+  @media (max-width: 880px) {
+    .hero .wrap, .premium { grid-template-columns: 1fr; }
+    .hero { padding-top: 32px; }
+    .covers { height: 340px; order: -1; }
+    .cover { width: 150px; } .c3 { width: 175px; }
+    .grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    nav.links a { display: none; }
+    .grid { grid-template-columns: 1fr; }
+    section { padding: 52px 0; }
+    .premium { padding: 32px 20px; }
+    .covers { height: 300px; }
+    .cover { width: 128px; } .c3 { width: 150px; }
+    .label { font-size: 14px; padding: 9px 6px; }
   }
 </style>
 </head>
 <body>
 
-<header>
+<header class="nav">
   <div class="wrap">
-    <div class="brand">
-      <div class="brand-mark">📓</div>
-      Note Prime
-    </div>
-    <nav>
-      <a href="#ozellikler">Özellikler</a>
-      <a href="#indir">İndir</a>
-      <a href="privacy.html">Gizlilik</a>
+    <a class="brand" href="#"><span class="brand-mark" aria-hidden="true"></span>Note Prime</a>
+    <nav class="links">
+      <a href="#features" data-i18n="nav_features">Özellikler</a>
+      <a href="#premium" data-i18n="nav_premium">Premium</a>
+      <a href="privacy.html" data-i18n="nav_privacy">Gizlilik</a>
+      <button class="lang" id="langToggle" type="button" aria-label="Language">EN</button>
     </nav>
   </div>
 </header>
 
-<section class="hero">
-  <div class="wrap">
-    <span class="hero-badge">iOS için yeni</span>
-    <h1>El yazınla düşün,<br><span>dijitalde</span> sakla.</h1>
-    <p>Apple Pencil ile doğal bir yazım hissi, sesli notlar, video ve fotoğraflarla zenginleştirilmiş defterler — hepsi tek bir uygulamada.</p>
-    <div class="cta-row">
-      <a class="btn btn-primary" href="#indir">App Store'da Aç</a>
-      <a class="btn btn-secondary" href="#ozellikler">Özellikleri Gör</a>
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow" data-i18n="eyebrow">iPhone ve iPad için</span>
+        <h1 data-i18n-html="h1">El yazınla düşün,<br><em>dijitalde</em> sakla.</h1>
+        <p class="lead" data-i18n="lead">Apple Pencil ile el yazısı notlar, çizimler, sesli notlar, fotoğraf ve videolar — hepsi kendi tarzında süslediğin defterlerde.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://apps.apple.com/app/id6773075603">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#apple"/></svg>
+            <span data-i18n="cta_store">App Store'dan İndir</span>
+          </a>
+          <a class="btn btn-secondary" href="#features" data-i18n="cta_features">Özellikleri Gör</a>
+        </div>
+        <p class="note" data-i18n="note">Ücretsiz indir · 15 dilde · Notların cihazında kalır</p>
+      </div>
+      <div class="covers" aria-hidden="true">
+        <div class="glow"></div>
+        <div class="cover c1"></div>
+        <div class="cover c2"></div>
+        <div class="cover c3"><div class="label" data-i18n="cover_label">Ders Notları</div></div>
+      </div>
     </div>
-    <div class="mock">Uygulama ekran görüntüsü<br>buraya eklenecek</div>
-  </div>
-</section>
+  </section>
 
-<section id="ozellikler">
-  <div class="wrap">
-    <div class="section-head">
-      <h2>Notların için ihtiyacın olan her şey</h2>
-      <p>Basit bir çizim defterinden fazlası — sesli, görsel ve yazılı notları tek yerde topla.</p>
+  <section id="features">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 data-i18n="features_title">Notların için ihtiyacın olan her şey</h2>
+        <p data-i18n="features_sub">Yazı, çizim, ses ve görüntü aynı sayfada. Sade, sıcak ve sana ait.</p>
+      </div>
+      <div class="grid">
+        <div class="feature">
+          <div class="icon t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+          <h3 data-i18n="f1_t">Doğal el yazısı</h3>
+          <p data-i18n="f1_d">Apple Pencil ya da parmağınla akıcı yazım ve çizim. Dolma kalem, kurşun kalem, fosforlu ve suluboya gibi farklı kalemler.</p>
+        </div>
+        <div class="feature">
+          <div class="icon s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><path d="M12 18v4"/></svg></div>
+          <h3 data-i18n="f2_t">Sesli notlar</h3>
+          <p data-i18n="f2_d">Dersleri ve toplantıları kaydet, kaydı notunun tam içine yerleştir, dokunarak dinle.</p>
+        </div>
+        <div class="feature">
+          <div class="icon o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg></div>
+          <h3 data-i18n="f3_t">Fotoğraf ve video</h3>
+          <p data-i18n="f3_d">Sayfalarına fotoğraf ve video ekle; görselleri sürükleyip boyutlandır.</p>
+        </div>
+        <div class="feature">
+          <div class="icon t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></svg></div>
+          <h3 data-i18n="f4_t">Sana ait defterler</h3>
+          <p data-i18n="f4_d">Renkli kapaklar ve kediler, kalpler, yıldızlar gibi sevimli desenlerle her konuya ayrı defter.</p>
+        </div>
+        <div class="feature">
+          <div class="icon s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.7-.9l-.8-1.2A2 2 0 0 0 7.9 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg></div>
+          <h3 data-i18n="f5_t">Klasörler ve favoriler</h3>
+          <p data-i18n="f5_d">Defterlerini klasörlere ayır, sık kullandıklarını favorilere ekle, adına ya da içeriğine göre ara.</p>
+        </div>
+        <div class="feature">
+          <div class="icon o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+          <h3 data-i18n="f6_t">Çizgili, kareli, düz</h3>
+          <p data-i18n="f6_d">Yazının çizgilere oturduğu çizgili ve kareli sayfalar, düz sayfalar ve hazır arka planlar.</p>
+        </div>
+        <div class="feature">
+          <div class="icon t"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19a4.5 4.5 0 1 0-1.4-8.8A6 6 0 0 0 4.5 13 3 3 0 0 0 6 19Z"/><path d="M12 12v6M9.5 14.5 12 12l2.5 2.5"/></svg></div>
+          <h3 data-i18n="f7_t">iCloud yedekleme</h3>
+          <p data-i18n="f7_d">Defterlerin her gün kendi iCloud Drive'ına otomatik yedeklenir; istersen dosya olarak da kaydet.</p>
+        </div>
+        <div class="feature">
+          <div class="icon s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+          <h3 data-i18n="f8_t">Notların sende kalır</h3>
+          <p data-i18n="f8_d">Notların, çizimlerin ve kayıtların yalnızca cihazında saklanır; sunucularımıza yüklenmez.</p>
+        </div>
+        <div class="feature">
+          <div class="icon o"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <h3 data-i18n="f9_t">15 dil</h3>
+          <p data-i18n="f9_d">Türkçe, İngilizce, Almanca, Japonca, Korece, Çince ve daha fazlası — uygulama cihazının dilinde açılır.</p>
+        </div>
+      </div>
     </div>
-    <div class="features">
-      <div class="feature-card">
-        <div class="feature-icon">✏️</div>
-        <h3>Doğal El Yazısı</h3>
-        <p>Apple Pencil desteğiyle akıcı, düşük gecikmeli çizim ve yazım deneyimi.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎙️</div>
-        <h3>Sesli Notlar</h3>
-        <p>Fikirlerini yazarken aynı anda sesli olarak da kaydet, sayfana göm.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🎬</div>
-        <h3>Video Ekle</h3>
-        <p>Sayfalarına video ekleyerek notlarını daha zengin hale getir.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🗂️</div>
-        <h3>Defter &amp; Klasör</h3>
-        <p>Notlarını defterlere, defterlerini klasörlere ayırarak düzenli tut.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔍</div>
-        <h3>Akıllı Arama</h3>
-        <p>El yazısı metne çevrilip aranabilir hale gelir, hiçbir not kaybolmaz.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3>Cihazında Kalır</h3>
-        <p>Notların cihazında yerel olarak saklanır; istediğinde yedeğini alabilirsin.</p>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<section id="indir">
-  <div class="wrap">
-    <div class="cta-band">
-      <h2>Notlarını bugün dijitalleştirmeye başla</h2>
-      <p>Note Prime App Store'da ücretsiz olarak indirilebilir.</p>
-      <a class="btn btn-primary" href="#">App Store'dan İndir</a>
+  <section id="premium">
+    <div class="wrap">
+      <div class="premium">
+        <div>
+          <span class="pill">Note Prime Club</span>
+          <h2 data-i18n="p_title">Premium ile sınırları kaldır</h2>
+          <p style="color:var(--muted);margin:0" data-i18n="p_sub">Ücretsiz sürümle hemen başla; dilediğinde Premium'a geç.</p>
+          <ul>
+            <li data-i18n="p1">Sınırsız defter ve sayfa</li>
+            <li data-i18n="p2">Tüm kapak desenleri ve sayfa arka planları</li>
+            <li data-i18n="p3">Sesli notlar, video ve gelişmiş kalemler</li>
+            <li data-i18n="p4">Otomatik iCloud yedekleme</li>
+            <li data-i18n="p5">Reklamsız kullanım</li>
+          </ul>
+        </div>
+        <div class="mini" aria-hidden="true">
+          <span style="background:var(--terracotta) radial-gradient(circle, rgba(255,255,255,.4) 2.5px, transparent 3px) 0 0/16px 16px"></span>
+          <span style="background:var(--sage) repeating-linear-gradient(-45deg, rgba(255,255,255,.3) 0 5px, transparent 5px 14px)"></span>
+          <span style="background:var(--periwinkle) radial-gradient(circle at 30% 30%, rgba(255,255,255,.4) 3px, transparent 3.5px) 0 0/20px 20px"></span>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+
+  <section class="final">
+    <div class="wrap">
+      <h2 data-i18n="final_title">Fikirlerini kaybetmeden yakala</h2>
+      <p style="color:var(--muted);font-size:18px;margin:0" data-i18n="final_sub">Note Prime, App Store'da ücretsiz.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://apps.apple.com/app/id6773075603">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><use href="#apple"/></svg>
+          <span data-i18n="cta_store">App Store'dan İndir</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
 
 <footer>
   <div class="wrap">
-    <p>&copy; 2026 Note Prime. Tüm hakları saklıdır.</p>
-    <div class="footer-links">
-      <a href="privacy.html">Gizlilik Politikası</a>
-      <a href="mailto:support@example.com">Destek</a>
-    </div>
+    <span>© 2026 Zeynep TOY · Note Prime</span>
+    <nav>
+      <a href="privacy.html" data-i18n="footer_privacy">Gizlilik Politikası</a>
+      <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/" data-i18n="footer_terms">Kullanım Koşulları</a>
+      <a href="mailto:legendaryteam.dev@gmail.com" data-i18n="footer_support">Destek</a>
+    </nav>
   </div>
 </footer>
 
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="apple" viewBox="0 0 24 24"><path d="M16.37 12.74c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.86-.76-1.47.02-2.83.86-3.59 2.17-1.53 2.66-.39 6.59 1.1 8.75.73 1.05 1.6 2.24 2.73 2.2 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.83-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.5zM14.2 6.28c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.65-1.05 1.68-.92 2.67.97.08 1.96-.49 2.56-1.22z"/></symbol>
+</svg>
+
+<script>
+  const T = {
+    en: {
+      nav_features: "Features", nav_premium: "Premium", nav_privacy: "Privacy",
+      eyebrow: "For iPhone and iPad",
+      h1: "Think in your handwriting,<br><em>keep it</em> digital.",
+      lead: "Handwritten notes, drawings, voice notes, photos and videos with Apple Pencil — all in notebooks you decorate your own way.",
+      cta_store: "Download on the App Store", cta_features: "See Features",
+      note: "Free to download · 15 languages · Your notes stay on your device",
+      cover_label: "Lecture Notes",
+      features_title: "Everything your notes need",
+      features_sub: "Writing, drawing, sound and pictures on the same page. Simple, warm and yours.",
+      f1_t: "Natural handwriting", f1_d: "Smooth writing and drawing with Apple Pencil or your finger. Fountain pen, pencil, highlighter, watercolor and more.",
+      f2_t: "Voice notes", f2_d: "Record lectures and meetings, place the recording right inside your note and tap to listen.",
+      f3_t: "Photos and videos", f3_d: "Add photos and videos to your pages; drag and resize images.",
+      f4_t: "Notebooks that feel like yours", f4_d: "A notebook for every topic, with colorful covers and cute patterns like cats, hearts and stars.",
+      f5_t: "Folders and favorites", f5_d: "Sort notebooks into folders, keep favorites close and search by name or content.",
+      f6_t: "Lined, grid, plain", f6_d: "Lined and grid pages where your text sits right on the lines, plain pages and ready-made backgrounds.",
+      f7_t: "iCloud backup", f7_d: "Your notebooks are backed up to your own iCloud Drive every day, or save a backup file anywhere.",
+      f8_t: "Your notes stay yours", f8_d: "Your notes, drawings and recordings are stored only on your device — never uploaded to our servers.",
+      f9_t: "15 languages", f9_d: "English, Turkish, German, Japanese, Korean, Chinese and more — the app opens in your device's language.",
+      p_title: "Go further with Premium", p_sub: "Start with the free version and upgrade whenever you like.",
+      p1: "Unlimited notebooks and pages", p2: "All cover patterns and page backgrounds",
+      p3: "Voice notes, video and advanced pens", p4: "Automatic iCloud backup", p5: "Ad-free experience",
+      final_title: "Capture ideas before they slip away", final_sub: "Note Prime is free on the App Store.",
+      footer_privacy: "Privacy Policy", footer_terms: "Terms of Use", footer_support: "Support",
+      title: "Note Prime — Handwritten Notebook"
+    }
+  };
+  const tr = {};
+  document.querySelectorAll("[data-i18n]").forEach(el => tr[el.dataset.i18n] = el.textContent);
+  document.querySelectorAll("[data-i18n-html]").forEach(el => tr[el.dataset.i18nHtml] = el.innerHTML);
+  tr.title = document.title;
+  T.tr = tr;
+
+  function apply(lang) {
+    const d = T[lang];
+    document.documentElement.lang = lang;
+    document.querySelectorAll("[data-i18n]").forEach(el => { if (d[el.dataset.i18n]) el.textContent = d[el.dataset.i18n]; });
+    document.querySelectorAll("[data-i18n-html]").forEach(el => { if (d[el.dataset.i18nHtml]) el.innerHTML = d[el.dataset.i18nHtml]; });
+    document.title = d.title;
+    document.getElementById("langToggle").textContent = lang === "tr" ? "EN" : "TR";
+    try { localStorage.setItem("lang", lang); } catch (e) {}
+  }
+  let saved = null;
+  try { saved = localStorage.getItem("lang"); } catch (e) {}
+  const initial = saved || ((navigator.language || "tr").toLowerCase().startsWith("tr") ? "tr" : "en");
+  if (initial !== "tr") apply(initial);
+  document.getElementById("langToggle").addEventListener("click", () =>
+    apply(document.documentElement.lang === "tr" ? "en" : "tr"));
+</script>
 </body>
 </html>
